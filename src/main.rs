@@ -32,7 +32,7 @@ fn process_world(world_id: isize, average_ping: f32) -> WorldResult {
 }
 
 fn sort_by_ping(world_results: &mut Vec<WorldResult>) {
-  world_results.sort_by(|a, b| a.average_ping.partial_cmp(&b.average_ping).unwrap() )
+  world_results.sort_by( |a, b| a.average_ping.partial_cmp(&b.average_ping).unwrap() )
 }
 
 fn print_current_best(world_results: &mut Vec<WorldResult>) {
@@ -44,6 +44,14 @@ fn print_current_best(world_results: &mut Vec<WorldResult>) {
   }
 
   io::stdout().flush().unwrap();
+}
+
+fn print_results(world_results: &mut Vec<WorldResult>) {
+  sort_by_ping(world_results);
+
+  for world_result in world_results.iter() {
+    println!("World {} ({}ms)", world_result.world_id, world_result.average_ping);
+  }
 }
 
 fn main() {
@@ -67,9 +75,6 @@ fn main() {
 
   println!("");
 
-  sort_by_ping(&mut world_results);
-
-  for world_result in world_results.iter() {
-    println!("World {} ({}ms)", world_result.world_id, world_result.average_ping);
-  } 
+  print_results(&mut world_results);
 }
+
