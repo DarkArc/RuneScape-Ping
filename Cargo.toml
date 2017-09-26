@@ -1,0 +1,7 @@
+[package]
+name = "runescape_ping"
+version = "0.0.1"
+authors = ["darkarc@nearce.com"]
+
+[dependencies]
+regex = "0.2"
