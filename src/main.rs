@@ -37,8 +37,8 @@ fn sort_by_ping(world_results: &mut Vec<WorldResult>) {
 
 fn print_current_best(world_results: &mut Vec<WorldResult>) {
   sort_by_ping(world_results);
-  let opt_best_match = world_results.first();
-  match opt_best_match {
+
+  match world_results.first() {
     Some(best_match) => print!("\rCurrent best match: World {} ({}ms); Checked {} servers", best_match.world_id, best_match.average_ping, world_results.len()),
     None => print!("No match found")
   }
