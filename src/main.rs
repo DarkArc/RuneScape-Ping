@@ -78,7 +78,7 @@ fn parse_args() -> ArgMatches<'static> {
     .get_matches();
 }
 
-fn get_target_worlds(matches: ArgMatches) -> Vec<isize> {
+fn get_target_worlds(matches: &ArgMatches) -> Vec<isize> {
   let mut target_worlds = vec![];
   if matches.is_present("members_only") {
       target_worlds.extend(MEMBER_WORLDS.iter());
@@ -123,7 +123,7 @@ static MEMBER_WORLDS: [isize; 92] = [
 fn main() {
 
   let matches = parse_args();
-  let target_worlds = get_target_worlds(matches);
+  let target_worlds = get_target_worlds(&matches);
 
   let avg_regex = Regex::new(r"min/avg/max/mdev = ([0-9\.]*)/([0-9\.]*)/([0-9\.]*)/([0-9\.]*)").unwrap();
   let mut world_results = Vec::new();
