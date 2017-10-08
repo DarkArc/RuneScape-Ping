@@ -51,10 +51,15 @@ fn print_current_best(world_results: &mut Vec<WorldResult>) {
 fn print_results(world_results: &mut Vec<WorldResult>, count: &usize) {
   sort_by_ping(world_results);
 
-  world_results.truncate(*count);
+  let num_of_worlds =
+  if *count > world_results.len() {
+    world_results.len()
+  } else {
+    *count
+  };
 
-  for world_result in world_results.iter() {
-    println!("World {} ({}ms)", world_result.world_id, world_result.average_ping);
+  for i in 0..num_of_worlds {
+      println!("World {} ({}ms)", &world_results[i].world_id, &world_results[i].average_ping);
   }
 }
 
