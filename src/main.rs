@@ -48,8 +48,10 @@ fn print_current_best(world_results: &mut Vec<WorldResult>) {
   io::stdout().flush().unwrap();
 }
 
-fn print_results(world_results: &mut Vec<WorldResult>) {
+fn print_results(world_results: &mut Vec<WorldResult>, count: &usize) {
   sort_by_ping(world_results);
+
+  world_results.truncate(*count);
 
   for world_result in world_results.iter() {
     println!("World {} ({}ms)", world_result.world_id, world_result.average_ping);
@@ -75,6 +77,11 @@ fn parse_args() -> ArgMatches<'static> {
         .conflicts_with("members_only")
         .conflicts_with("ftp_only")
         .help("Custom world list to test"))
+    .arg(Arg::with_name("count")
+        .short("c")
+        .long("resultCount")
+        .takes_value(true)
+        .help("Number of results to display"))
     .get_matches();
 }
 
@@ -143,5 +150,11 @@ fn main() {
 
   println!("");
 
-  print_results(&mut world_results);
+  let result_count = if let Some(rc) = matches.value_of("count") {
+      rc.parse::<usize>().unwrap()
+  } else {
+    5usize
+  };
+
+  print_results(&mut world_results, &result_count);
 }
