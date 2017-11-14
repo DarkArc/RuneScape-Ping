@@ -90,14 +90,14 @@ fn parse_args() -> ArgMatches<'static> {
     .get_matches();
 }
 
-fn get_target_worlds(matches: &ArgMatches) -> Vec<isize> {
+fn get_target_worlds(args: &ArgMatches) -> Vec<isize> {
   let mut target_worlds = vec![];
-  if matches.is_present("members_only") {
+  if args.is_present("members_only") {
       target_worlds.extend(MEMBER_WORLDS.iter());
-  } else if matches.is_present("ftp_only") {
+  } else if args.is_present("ftp_only") {
       target_worlds.extend(FTP_WORLDS.iter());
-  } else if matches.is_present("worldset") {
-      if let Some(worlds) = matches.values_of("worldset") {
+  } else if args.is_present("worldset") {
+      if let Some(worlds) = args.values_of("worldset") {
           for x in worlds {
               let temp: isize = x.parse::<isize>().unwrap();
               if MEMBER_WORLDS.contains(&temp) || FTP_WORLDS.contains(&temp) {
@@ -134,8 +134,8 @@ static MEMBER_WORLDS: [isize; 92] = [
 
 fn main() {
 
-  let matches = parse_args();
-  let target_worlds = get_target_worlds(&matches);
+  let args = parse_args();
+  let target_worlds = get_target_worlds(&args);
 
   let avg_regex = Regex::new(r"min/avg/max/mdev = ([0-9\.]*)/([0-9\.]*)/([0-9\.]*)/([0-9\.]*)").unwrap();
   let mut world_results = Vec::new();
@@ -155,7 +155,7 @@ fn main() {
 
   println!("");
 
-  let result_count = if let Some(rc) = matches.value_of("count") {
+  let result_count = if let Some(rc) = args.value_of("count") {
       rc.parse::<usize>().unwrap()
   } else {
     5usize
