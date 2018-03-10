@@ -12,6 +12,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#[macro_use]
+extern crate lazy_static;
 
 extern crate regex;
 extern crate clap;
@@ -51,12 +53,7 @@ fn print_current_best(world_results: &mut Vec<WorldResult>) {
 fn print_results(world_results: &mut Vec<WorldResult>, count: &usize) {
   sort_by_ping(world_results);
 
-  let num_of_worlds =
-  if *count > world_results.len() {
-    world_results.len()
-  } else {
-    *count
-  };
+  let num_of_worlds = std::cmp::max(1, std::cmp::min(world_results.len(), *count));
 
   for i in 0..num_of_worlds {
       println!("World {} ({}ms)", &world_results[i].world_id, &world_results[i].average_ping);
@@ -114,26 +111,33 @@ fn get_target_worlds(args: &ArgMatches) -> Vec<isize> {
   return target_worlds;
 }
 
-static FTP_WORLDS: [isize; 26] = [
-  3, 7, 8, 11, 17, 19, 20, 29, 33, 34, 38, 41, 43,
-  55, 57, 61, 80, 81, 94, 101, 108, 120, 122, 135,
-  136, 141
-];
 
-static MEMBER_WORLDS: [isize; 92] = [
-  1, 2, 4, 5, 6, 9, 10, 12, 14, 15, 16, 18, 21,
-  22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 35, 36,
-  37, 39, 40, 42, 44, 45, 46, 48, 49, 50, 51, 52,
-  53, 54, 56, 58, 59, 60, 62, 63, 64, 65, 66, 67,
-  68, 69, 70, 71, 72, 73, 74, 76, 77, 78, 79, 82,
-  83, 84, 85, 86, 87, 88, 89, 91, 92, 96, 97, 98,
-  99, 100, 103, 104, 105, 106, 114, 115, 116, 117,
-  119, 120, 123, 124, 134, 137, 138, 139, 140
-];
+lazy_static! {
+  static ref FTP_WORLDS: Vec<isize> = {
+    let ftp = vec![
+      3, 7, 8, 11, 17, 19, 20, 29, 33, 34, 38, 41, 43,
+      55, 57, 61, 80, 81, 94, 101, 108, 120, 122, 135,
+      136, 141
+    ];
+    ftp
+  };
 
+  static ref MEMBER_WORLDS: Vec<isize> = {
+    let mem = vec![
+      1, 2, 4, 5, 6, 9, 10, 12, 14, 15, 16, 18, 21,
+      22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 35, 36,
+      37, 39, 40, 42, 44, 45, 46, 48, 49, 50, 51, 52,
+      53, 54, 56, 58, 59, 60, 62, 63, 64, 65, 66, 67,
+      68, 69, 70, 71, 72, 73, 74, 76, 77, 78, 79, 82,
+      83, 84, 85, 86, 87, 88, 89, 91, 92, 96, 97, 98,
+      99, 100, 103, 104, 105, 106, 114, 115, 116, 117,
+      119, 120, 123, 124, 134, 137, 138, 139, 140
+    ];
+    mem
+  };
+}
 
 fn main() {
-
   let args = parse_args();
   let target_worlds = get_target_worlds(&args);
 
@@ -154,12 +158,10 @@ fn main() {
   }
 
   println!("");
-
-  let result_count = if let Some(rc) = args.value_of("count") {
-      rc.parse::<usize>().unwrap()
-  } else {
-    5usize
-  };
+  let result_count = 5usize;
+  if let Some(rc) = args.value_of("count") {
+    rc.parse::<usize>().unwrap();
+  }
 
   print_results(&mut world_results, &result_count);
 }
