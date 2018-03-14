@@ -158,9 +158,9 @@ fn main() {
   }
 
   println!("");
-  let result_count = 5usize;
+  let mut result_count = 5usize;
   if let Some(rc) = args.value_of("count") {
-    rc.parse::<usize>().unwrap();
+    result_count = rc.parse::<usize>().unwrap();
   }
 
   print_results(&mut world_results, &result_count);
